@@ -6,7 +6,7 @@ import Header from './components/Header';
 const page = () => {
   return (
     <>
-      <div className='min-h-screen overflow-hidden text-black px-8'>
+      <div className='min-h-screen overflow-hidden text-black px-8 bg-[#F0FDF4]'>
         <Header />
         <ImageUploader />
       </div>
