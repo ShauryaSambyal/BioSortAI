@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import ImageUploader from './components/ImageUploader';
 import Header from './components/Header';
 
