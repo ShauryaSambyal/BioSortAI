@@ -1,918 +1,361 @@
-# 🧬 BioSort
+# BioSort AI ♻️
 
-### AI-Powered Biomedical Waste Classification & Segregation
-
-**BioSort** is an AI-powered web application designed to help identify and classify biomedical waste from images and provide appropriate disposal/segregation guidance.
-
-The system uses **computer vision and generative AI** to analyze an uploaded image, determine the likely category of biomedical waste, and present the result through a simple and intuitive web interface.
-
-> **⚠️ Disclaimer:** BioSort is an educational/prototype project and should not be used as the sole authority for real-world biomedical waste disposal. Actual disposal must follow the regulations, guidelines, and procedures applicable to the relevant healthcare facility and jurisdiction.
+BioSort AI is an AI-powered web platform focused on **waste segregation** and **health-risk prediction**. It combines an interactive waste-segregation workflow with a browser-based heart-attack risk prediction model in a modern dark clinical interface.
 
 ---
 
-## 🌐 Live Demo
+## ✨ Features
 
-**Website:**
-https://biosort.vercel.app/
+### ♻️ BioSort
 
----
+An interactive waste-segregation workflow featuring:
 
-## 📌 Table of Contents
+* Drag-and-drop interactions
+* File/image validation
+* Error handling
+* Waste classification
+* Clear segregation results
+* Responsive design
 
-* [About the Project](#-about-the-project)
-* [Problem Statement](#-problem-statement)
-* [Our Solution](#-our-solution)
-* [Key Features](#-key-features)
-* [Heart Attack Risk Predictor](#-heart-attack-risk-predictor)
-* [How BioSort Works](#-how-biosort-works)
-* [Technology Stack](#-technology-stack)
-* [Project Structure](#-project-structure)
-* [Prerequisites](#-prerequisites)
-* [Installation](#-installation)
-* [Getting a Gemini API Key](#-getting-a-gemini-api-key)
-* [Environment Variables](#-environment-variables)
-* [Running the Project](#-running-the-project)
-* [How to Use BioSort](#-how-to-use-biosort)
-* [Application Workflow](#-application-workflow)
-* [AI Classification](#-ai-classification)
-* [API & Backend](#-api--backend)
-* [Security](#-security)
-* [Common Issues](#-common-issues)
-* [Future Improvements](#-future-improvements)
-* [Contributing](#-contributing)
-* [License](#-license)
-* [Acknowledgements](#-acknowledgements)
-
----
-
-# 💡 About the Project
-
-Biomedical waste requires proper segregation and disposal to reduce the risk of infection, contamination, and environmental damage.
-
-However, correctly identifying different types of biomedical waste can be difficult, particularly when dealing with visually similar materials.
-
-**BioSort** aims to simplify this process by allowing users to upload an image of a waste item and receive an AI-generated classification and disposal recommendation.
-
-The application combines:
-
-* Image-based AI analysis
-* Generative AI
-* A web-based user interface
-* Automated waste classification
-* Disposal/segregation recommendations
-
----
-
-# ❗ Problem Statement
-
-Biomedical waste is generated in hospitals, laboratories, clinics, research facilities, and other healthcare environments.
-
-Improper segregation can result in:
-
-* Environmental contamination
-* Increased infection risk
-* Improper handling of hazardous materials
-* Higher waste-management costs
-* Exposure of healthcare workers and waste handlers to potentially dangerous materials
-
-A system capable of quickly analyzing and categorizing waste images can act as an additional decision-support tool for waste segregation.
-
----
-
-# 💡 Our Solution
-
-BioSort provides a simple workflow:
+Available at:
 
 ```text
-User
-  │
-  ▼
-Upload Waste Image
-  │
-  ▼
-BioSort Web Application
-  │
-  ▼
-AI Image Analysis
-  │
-  ▼
-Waste Classification
-  │
-  ▼
-Segregation / Disposal Recommendation
-  │
-  ▼
-Result Displayed to User
+/biosort
 ```
 
-The goal is to make biomedical waste classification **faster, simpler, and more accessible** through an AI-assisted interface.
+### ❤️ Heart Risk Predictor
 
----
+A browser-based logistic-regression model that:
 
-# ✨ Key Features
+* Runs entirely on the client
+* Applies the original training scaler
+* Calculates risk probability
+* Assigns a risk band
+* Displays per-marker attribution
+* Requires no Python inference server
 
-### 📸 Image-Based Classification
-
-Users can upload an image of biomedical waste for analysis.
-
-### 🤖 AI-Powered Analysis
-
-The uploaded image is analyzed using an AI vision model to identify the likely type/category of waste.
-
-### 🗑️ Waste Segregation Guidance
-
-After classification, BioSort provides guidance regarding the appropriate segregation/disposal category.
-
-### ⚡ Fast Results
-
-The application sends the image to the AI service and displays the generated classification without requiring manual identification.
-
-### 🌐 Web-Based
-
-BioSort works through a web browser and does not require users to install a separate application.
-
-### 🎨 Simple User Interface
-
-The interface is designed around a straightforward workflow:
-
-**Upload → Analyze → View Result**
-
----
-
-# ❤️ Heart Attack Risk Predictor
-
-BioSort now ships a second tool alongside waste segregation: a heart-attack risk screen at
-**`/heart`**. The landing page presents both as two calls to action, and the predictor itself is
-a single centred card — inputs on top, an animated result panel below.
-
-## Where the model comes from
-
-The model is the scikit-learn classifier trained in the separate **`ML Model`** project:
-
-| Artifact | Role |
-| --- | --- |
-| `LR_heart.pkl` | `LogisticRegression` — 15 coefficients + intercept |
-| `scaler_heart.pkl` | `StandardScaler` for the 5 continuous columns |
-| `columns_heart.pkl` | Ordered feature list the estimator expects |
-
-Those pickles remain the single source of truth. `scripts/extract_heart_model.py` reads them
-and writes `lib/heart-model.js`, a plain ES module holding the raw numbers, which
-`lib/heartModel.js` turns back into an exact reproduction of `LogisticRegression.predict_proba()`.
-
-A logistic regression is just a dot product through a sigmoid, so the whole model runs **in the
-browser** — no Python service, nothing to host, no health data ever leaving the device.
-
-## Why the port applies the scaler
-
-The original Streamlit app loaded `scaler_heart.pkl` but never used it. That is a bug with real
-consequences:
-
-* `scaler.mean_` / `scaler.scale_` line up exactly with the five continuous columns, and every
-  coefficient is `O(0.1–1.4)` — the signature of inputs that were standardised during training.
-* Feeding raw values into those coefficients produces saturated logits. A healthy 40-year-old male
-  scores `z ≈ −20` (`p ≈ 1e-9`) and a 62-year-old with a normal workup scores `z ≈ −2.8`, while
-  genuinely high-risk profiles pin at `p ≈ 0.998`. The model becomes certain about everything and
-  useful about nothing.
-
-With the scaler applied, the same profiles produce a graded, clinically plausible spread
-(`0.008 → 0.99`) instead of binary certainty. The port therefore standardises the continuous
-columns before scoring.
-
-Feature engineering mirrors the training pipeline exactly: `drop_first=True` one-hot encoding for
-the categorical fields, so the reference level of each group is the all-zeros row
-(*Female*, *Asymptomatic*, *LVH*, *Downsloping*).
-
-## Keeping it honest
-
-Two scripts back the integration:
-
-```bash
-# Re-extract after retraining (points at the ML Model folder by default)
-python scripts/extract_heart_model.py --source "C:/path/to/ML Model"
-
-# Prove the JS port still matches scikit-learn, case by case
-node scripts/verify_heart_port.mjs
-```
-
-The verifier runs eight profiles through **real** scikit-learn and through `lib/heartModel.js`,
-then asserts they agree to `1e-9`. It is a genuine cross-implementation check, not a snapshot of
-remembered numbers — run it whenever the artifacts change.
-
-## Explaining the score
-
-A bare percentage is not useful to a patient or a clinician, so every prediction also returns the
-**evidence**: each feature's contribution (`coefficient × standardised value`) is ranked and split
-into markers that raised the estimate and markers that lowered it, shown with their odds
-multiplier (`×3.78`, `×0.24`). The panel also exposes the log-odds and the model version.
-
-## Predictions are not diagnoses
-
-The output is a statistical estimate from population data. Risk scores are wrong in both
-directions, and a low score is not clearance. Every result screen in the app says so, and the same
-warning sits in the site footer.
-
----
-
-# 🏗️ How BioSort Works
-
-At a high level, BioSort follows this architecture:
+Available at:
 
 ```text
-                    ┌──────────────────┐
-                    │      User        │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │   Web Frontend   │
-                    │                  │
-                    │ Image Upload UI  │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │ Backend / API    │
-                    │                  │
-                    │ Request Handling │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │   Gemini AI      │
-                    │  Vision Model    │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │ Classification   │
-                    │ + Recommendation │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │   Result Page    │
-                    └──────────────────┘
+/heart
 ```
 
 ---
 
-# 🛠️ Technology Stack
+## 🧠 Heart Risk Model
 
-The project can be divided into the following layers:
-
-| Layer           | Technology                    |
-| --------------- | ----------------------------- |
-| Frontend        | React / JavaScript            |
-| Styling         | CSS                           |
-| Backend         | Node.js / Express             |
-| AI              | Google Gemini API             |
-| Image Analysis  | Gemini Vision / Multimodal AI |
-| Package Manager | npm                           |
-| Deployment      | Vercel                        |
-| Version Control | Git & GitHub                  |
-
-> The exact technologies may vary depending on the current implementation in the repository.
-
----
-
-# 📁 Project Structure
-
-A typical BioSort project structure looks like:
+The original scikit-learn logistic-regression model has been ported to JavaScript so predictions can be performed directly in the browser.
 
 ```text
-BioSort/
-│
-├── public/
-│   └── assets/
-│
-├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── services/
-│   ├── assets/
-│   ├── App.jsx
-│   └── main.jsx
-│
-├── server/
-│   ├── routes/
-│   ├── controllers/
-│   └── server.js
-│
-├── .env
-├── .gitignore
-├── package.json
-├── package-lock.json
-└── README.md
+User Input
+    ↓
+Feature Encoding
+    ↓
+Training Scaler
+    ↓
+Logistic Regression
+    ↓
+Risk Probability
+    ↓
+Risk Band + Factor Attribution
 ```
 
-Your actual folder structure may differ depending on the version of BioSort you are using.
+### Model Port
 
----
+```text
+scripts/
+├── extract_heart_model.py
+└── verify_heart_port.mjs
 
-# ⚙️ Prerequisites
-
-Before running BioSort locally, make sure you have:
-
-### Required
-
-* **Node.js** (LTS recommended)
-* **npm**
-* **Git**
-* A **Google AI Studio / Gemini API key**
-
-Check whether Node.js and npm are installed:
-
-```bash
-node --version
+lib/
+├── heart-model.js
+└── heartModel.js
 ```
 
-```bash
-npm --version
-```
+`extract_heart_model.py` reads the trained model and scaler from the ML Model directory and generates the JavaScript model representation.
 
-If both commands return a version number, you are ready to continue.
+`heartModel.js` handles feature preparation, scaling, prediction, risk-band calculation, and marker attribution.
 
----
+### Bug Fixes
 
-# 🚀 Installation
+Two issues from the original implementation were fixed:
 
-## 1. Clone the Repository
+1. **Missing scaler application**
+   The original application loaded the scaler but did not apply it to incoming values, causing predictions to become saturated near 0% or 99%.
 
-```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-```
+2. **Incorrect RestingECG feature name**
+   The incorrect one-hot encoded column name caused both ECG features to remain zero. The feature mapping now matches the training data.
 
-Move into the project directory:
+### Verification
 
-```bash
-cd BioSort
-```
-
----
-
-## 2. Install Dependencies
+The JavaScript implementation is compared against the original scikit-learn implementation using eight test profiles.
 
 Run:
 
 ```bash
-npm install
+node scripts/verify_heart_port.mjs
 ```
 
-If the backend has its own `package.json`, install its dependencies as well:
+The expected prediction difference is:
+
+```text
+≤ 1e-9
+```
+
+---
+
+## 🎨 Design System
+
+The project uses a dark clinical visual system designed around clarity and focused interaction.
+
+### Design characteristics
+
+* Dark interface
+* Teal and coral accent colors
+* High-contrast typography
+* Grid-based background
+* Responsive cards and layouts
+* Purposeful animations
+
+### Animation
+
+The project uses:
+
+* **Framer Motion** for UI transitions and reveal animations
+* **Anime.js** for animated counters
+
+Decorative effects that distracted from the main experience were removed, including:
+
+* Hero ECG decoration
+* Keyword cloud
+* Marquee
+* Scroll-linked hero fade
+
+The hero section was also resized so both primary tool CTAs remain visible above the fold.
+
+---
+
+## 🏠 Home Page
+
+The home page acts as the central entry point for both tools.
+
+```text
+Hero
+  ↓
+Tool CTAs
+  ↓
+Statistics
+  ↓
+Tool Cards
+  ↓
+How It Works
+```
+
+Users can navigate directly to:
+
+* ❤️ Heart Risk Predictor
+* ♻️ BioSort
+
+---
+
+## 🗂️ Routes
+
+| Route      | Description                |
+| ---------- | -------------------------- |
+| `/`        | Main landing page          |
+| `/heart`   | Heart-risk prediction      |
+| `/biosort` | Waste-segregation workflow |
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* React
+* Next.js
+* JavaScript / TypeScript
+* CSS
+* Framer Motion
+* Anime.js
+
+### Machine Learning
+
+* Python
+* scikit-learn
+* Logistic Regression
+* JavaScript client-side model
+
+### Testing
+
+* Node.js
+* scikit-learn reference predictions
+* Automated numerical verification
+
+### Deployment
+
+The application can be deployed using platforms such as Vercel.
+
+---
+
+## 📁 Project Structure
+
+```text
+project/
+│
+├── app/
+│   ├── page.*
+│   ├── heart/
+│   │   └── page.*
+│   └── biosort/
+│       └── page.*
+│
+├── lib/
+│   ├── heart-model.js
+│   └── heartModel.js
+│
+├── scripts/
+│   ├── extract_heart_model.py
+│   └── verify_heart_port.mjs
+│
+├── ML Model/
+│   └── trained model files
+│
+├── public/
+│   └── assets
+│
+├── globals.css
+├── package.json
+└── README.md
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
 
 ```bash
-cd server
-npm install
+git clone <repository-url>
+cd <project-directory>
 ```
 
-Then return to the root directory:
-
-```bash
-cd ..
-```
-
----
-
-# 🔑 Getting a Gemini API Key
-
-BioSort uses Google's Gemini API for AI-powered image analysis.
-
-You can create your own API key through **Google AI Studio**.
-
-### Step 1 — Open Google AI Studio
-
-Go to:
-
-https://aistudio.google.com/
-
-### Step 2 — Sign in
-
-Sign in using your Google account.
-
-### Step 3 — Open the API Keys section
-
-Navigate to the API key section and create a new API key.
-
-Google's current Gemini documentation provides the official process for creating and managing API keys.
-
-### Step 4 — Copy your API key
-
-Your key will look similar to:
-
-```text
-AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-```
-
-**Do not upload this key to GitHub.**
-
----
-
-# 🔐 Environment Variables
-
-Create a `.env` file in the appropriate directory used by the project.
-
-For example:
-
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-
-If your implementation uses a frontend environment variable, use the naming convention required by your frontend framework.
-
-For example, Vite commonly uses:
-
-```env
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-```
-
-### Important
-
-Never commit your `.env` file.
-
-Add it to `.gitignore`:
-
-```gitignore
-.env
-.env.local
-.env.*.local
-node_modules/
-```
-
-Google recommends environment variables as a secure way to configure Gemini API keys rather than embedding keys directly in source code.
-
----
-
-# ▶️ Running the Project
-
-After installing the dependencies and configuring your API key:
-
-```bash
-npm run dev
-```
-
-The terminal should display a local development URL, commonly something similar to:
-
-```text
-http://localhost:5173
-```
-
-Open that URL in your browser.
-
----
-
-## Running the Backend
-
-If BioSort uses a separate backend server, open another terminal:
-
-```bash
-cd server
-```
-
-Then run:
-
-```bash
-npm run dev
-```
-
-or, depending on the project's configuration:
-
-```bash
-npm start
-```
-
-You may then have:
-
-```text
-Frontend:
-http://localhost:5173
-
-Backend:
-http://localhost:5000
-```
-
-The exact ports depend on the configuration in the repository.
-
----
-
-# 🧭 How to Navigate BioSort
-
-BioSort is designed around a simple workflow.
-
-## 1. Open the Website
-
-Navigate to:
-
-https://biosort.vercel.app/
-
-You will be presented with the BioSort interface.
-
----
-
-## 2. Upload an Image
-
-Locate the image upload section.
-
-Upload an image containing the biomedical waste item you want to analyze.
-
-For best results:
-
-* Use a clear image
-* Make sure the waste item is visible
-* Avoid extremely dark images
-* Avoid heavily blurred images
-* Keep unnecessary objects out of the frame when possible
-
----
-
-## 3. Start the Analysis
-
-After selecting the image, start the AI analysis.
-
-The application sends the image to the configured AI service.
-
----
-
-## 4. Wait for the AI Response
-
-The AI model analyzes the image and attempts to identify the waste category.
-
-The processing time can vary depending on:
-
-* Image size
-* Internet connection
-* API response time
-* Current API availability
-* Model processing time
-
----
-
-## 5. View the Result
-
-BioSort displays the generated result.
-
-Depending on the implementation, the result can contain information such as:
-
-```text
-Waste Type
-     ↓
-Waste Category
-     ↓
-Recommended Segregation
-     ↓
-Disposal Guidance
-```
-
----
-
-# 🧠 AI Classification
-
-BioSort uses a multimodal AI model capable of processing both text and images.
-
-The basic concept is:
-
-```text
-Image
-  │
-  ▼
-AI Vision Model
-  │
-  ├── Identify object
-  │
-  ├── Determine waste type
-  │
-  ├── Determine category
-  │
-  └── Generate recommendation
-  │
-  ▼
-Formatted Result
-```
-
-The AI is provided with instructions describing the task and is asked to analyze the uploaded image.
-
-A simplified conceptual prompt could look like:
-
-```text
-Analyze the uploaded image.
-
-Identify the biomedical waste item shown.
-
-Determine:
-1. What the item is
-2. Its biomedical waste category
-3. The appropriate segregation category
-4. Recommended disposal guidance
-
-Return the result in a clear and structured format.
-```
-
-The actual prompt used by the application may be more detailed.
-
----
-
-# 🔌 API & Backend
-
-The backend/API layer is responsible for handling communication between the application and the AI service.
-
-A simplified request flow is:
-
-```text
-Frontend
-   │
-   │ Image
-   ▼
-Backend API
-   │
-   │ API Request
-   ▼
-Gemini API
-   │
-   │ AI Response
-   ▼
-Backend
-   │
-   │ Result
-   ▼
-Frontend
-```
-
-Keeping the AI API request on the server side is preferable because it prevents exposing sensitive API credentials directly in the browser.
-
----
-
-# 🔒 Security
-
-If you are deploying your own version of BioSort, pay special attention to API-key security.
-
-### Never do this:
-
-```javascript
-const API_KEY = "AIzaSyXXXXXXXXXXXXXXXX";
-```
-
-And never commit:
-
-```text
-.env
-```
-
-to GitHub.
-
-Instead:
-
-```env
-GEMINI_API_KEY=your_key_here
-```
-
-and load the value through environment variables.
-
-For production deployments, configure environment variables through your hosting provider rather than committing secrets to the repository.
-
----
-
-# 🐛 Common Issues
-
-## `npm install` fails
-
-Try:
-
-```bash
-npm cache clean --force
-```
-
-Then:
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-If the problem persists, verify your Node.js version:
-
-```bash
-node --version
-```
-
----
-
-## Gemini API Key Error
-
-If you receive an authentication error:
-
-1. Check that the API key is correct.
-2. Check that the `.env` file is in the correct location.
-3. Make sure the variable name matches the code.
-4. Restart the development server after changing `.env`.
-
-For example:
-
-```env
-GEMINI_API_KEY=YOUR_KEY
-```
-
-Then restart:
+### 3. Start the development server
 
 ```bash
 npm run dev
 ```
 
----
-
-## API Key Is Undefined
-
-If the application reports something similar to:
+Open:
 
 ```text
-API key is undefined
+http://localhost:3000
 ```
-
-check whether the application expects:
-
-```env
-GEMINI_API_KEY=...
-```
-
-or:
-
-```env
-VITE_GEMINI_API_KEY=...
-```
-
-The variable name must exactly match what the code reads.
 
 ---
 
-## Image Analysis Is Not Working
+## 🔄 Regenerating the Heart Model
 
-Check:
-
-* Internet connection
-* Gemini API key
-* API quota/rate limits
-* Image format
-* Image size
-* Browser console
-* Backend terminal logs
-
----
-
-## Changes to `.env` Are Not Taking Effect
-
-Restart the development server:
+If the trained model or scaler is updated, regenerate the JavaScript model:
 
 ```bash
-Ctrl + C
+python scripts/extract_heart_model.py
 ```
 
-Then:
+Then verify the generated implementation:
 
 ```bash
-npm run dev
+node scripts/verify_heart_port.mjs
 ```
-
-Environment variables are generally loaded when the development process starts.
 
 ---
 
-# 🌍 Deployment
+## ♻️ BioSort Workflow
 
-BioSort can be deployed using platforms such as **Vercel** or another Node.js-compatible hosting platform.
-
-A typical deployment workflow is:
+The BioSort workflow provides an interactive way to classify and segregate waste.
 
 ```text
-GitHub Repository
-       │
-       ▼
-   Vercel
-       │
-       ├── Build Application
-       │
-       ├── Configure Environment Variables
-       │
-       └── Deploy
-       │
-       ▼
-   Live Website
+Input
+  ↓
+Validation
+  ↓
+Classification
+  ↓
+Drag & Drop
+  ↓
+Segregation Result
 ```
 
-When deploying, add your Gemini API key to the hosting provider's **Environment Variables** section.
-
-Do **not** place the API key directly into the repository.
+The application validates uploaded files and handles invalid or unsupported inputs without breaking the workflow.
 
 ---
 
-# 🔮 Future Improvements
+## 📱 Responsive Design
 
-Potential future improvements for BioSort include:
+The interface is designed for:
 
-* [ ] Support for more biomedical waste categories
-* [ ] Custom-trained computer vision model
-* [ ] Improved classification accuracy
-* [ ] Confidence scores
-* [ ] Multi-image analysis
-* [ ] Real-time camera classification
-* [ ] Waste segregation history
-* [ ] User accounts
-* [ ] Analytics dashboard
-* [ ] Hospital/clinic-specific deployment
-* [ ] Multilingual support
-* [ ] Offline classification
-* [ ] Integration with waste-management systems
-* [ ] Regulatory guideline database
-* [ ] Explainable AI classification
-* [ ] Automated reporting
+* Desktop
+* Laptop
+* Tablet
+* Mobile
+
+Layouts and interactions adapt to different screen sizes while keeping the primary actions accessible.
 
 ---
 
-# 🤝 Contributing
+## 🎯 Project Goals
 
-Contributions are welcome.
+BioSort AI demonstrates the integration of machine learning with modern web development.
 
-To contribute:
+The project showcases:
 
-### 1. Fork the repository
-
-Click **Fork** on GitHub.
-
-### 2. Clone your fork
-
-```bash
-git clone https://github.com/YOUR_USERNAME/BioSort.git
-```
-
-### 3. Create a new branch
-
-```bash
-git checkout -b feature/your-feature
-```
-
-### 4. Make your changes
-
-Implement and test your changes locally.
-
-### 5. Commit your changes
-
-```bash
-git add .
-git commit -m "Add: your feature"
-```
-
-### 6. Push your branch
-
-```bash
-git push origin feature/your-feature
-```
-
-### 7. Create a Pull Request
-
-Open a Pull Request from your branch to the main BioSort repository.
-
----
-# ⚠️ Important Disclaimer
-
-BioSort is an **AI-assisted classification tool**, not a replacement for professional biomedical waste-management procedures.
-
-AI-generated classifications may occasionally be incorrect.
-
-Users should always follow:
-
-* Local biomedical waste regulations
-* Healthcare facility protocols
-* Official waste-segregation guidelines
-* Instructions from qualified professionals
-
-The project should therefore be treated as a **decision-support and educational tool**, rather than an authoritative disposal system.
+* Client-side ML inference
+* Machine-learning model portability
+* Model verification
+* Interactive UI design
+* Drag-and-drop workflows
+* Input validation
+* Data visualization
+* Responsive web development
+* Purposeful animation
 
 ---
 
-# 👨‍💻 Project
+## 🔐 Privacy
 
-**BioSort — AI-Powered Biomedical Waste Classification**
+The heart-risk prediction model runs directly in the browser. Prediction therefore does not require sending the entered model inputs to a dedicated prediction server.
 
-Built as an AI/web development project exploring the use of multimodal artificial intelligence for practical environmental and healthcare applications.
-
----
-
-## ⭐ Support the Project
-
-If you find BioSort interesting or useful:
-
-⭐ Star the repository
-🍴 Fork the project
-🐛 Report issues
-💡 Suggest improvements
-🤝 Contribute to the project
+Users should still avoid entering unnecessary personal information.
 
 ---
 
-## 🔗 Links
+## ⚠️ Medical Disclaimer
 
-**Live Demo:**
-https://biosort.vercel.app/
+The heart-risk predictor is intended **for educational and demonstration purposes only**.
 
-**GitHub:**
-Add your repository URL here.
+It is not a medical diagnostic tool and should not replace professional medical advice, clinical assessment, or emergency medical services.
 
 ---
 
-### Built with ❤️ using AI, web technologies, and a goal of making biomedical waste segregation smarter.
+## 🚧 Future Improvements
+
+* Camera-based waste detection
+* Expanded waste categories
+* Improved accessibility
+* Additional ML models
+* Automated model regression testing
+* User history and analytics
+* PWA/mobile support
+* Expanded educational content
+
+---
+
+## 👨‍💻 BioSort AI
+
+An interactive AI platform combining **waste segregation** and **browser-based machine-learning prediction** in a modern, responsive web experience.
