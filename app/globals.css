@@ -1,1 +1,413 @@
 @import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Design tokens
+ * A minimal, instrument-panel dark theme: near-black grounds, a single
+ * teal "vital sign" accent, and coral reserved for clinical warnings.
+ * ------------------------------------------------------------------ */
+@theme {
+  --color-void: #04070a;
+  --color-abyss: #070b10;
+  --color-panel: #0b1119;
+  --color-panel-2: #0e1620;
+  --color-hairline: #1a2430;
+  --color-hairline-2: #24313f;
+
+  --color-mint: #2dd4bf;
+  --color-mint-soft: #5eead4;
+  --color-pulse: #34d399;
+  --color-coral: #fb7185;
+  --color-ember: #f43f5e;
+  --color-amber: #fbbf24;
+
+  --color-ink: #e8eef5;
+  --color-ink-soft: #9aa9bb;
+  --color-ink-faint: #667688;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* ------------------------------------------------------------------ *
+ * Base
+ * ------------------------------------------------------------------ */
+* {
+  border-color: var(--color-hairline);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-mint) 30%, transparent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--color-mint) 70%, transparent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-2);
+  border-radius: 99px;
+  border: 2px solid var(--color-void);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #33455a;
+}
+
+/* ------------------------------------------------------------------ *
+ * Backdrops
+ * ------------------------------------------------------------------ */
+
+/* The signature grid. Fades out toward the edges so it reads as depth
+   rather than wallpaper. */
+.grid-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.075) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.075) 1px, transparent 1px);
+  background-size: 58px 58px;
+  mask-image: radial-gradient(ellipse 100% 78% at 50% 0%, #000 30%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 100% 78% at 50% 0%, #000 30%, transparent 92%);
+}
+
+.grid-backdrop--fine {
+  background-size: 26px 26px;
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.045) 1px, transparent 1px);
+}
+
+/* Soft coloured bloom behind hero/result content. */
+.glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-mint {
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.3), transparent 68%);
+}
+
+.glow-coral {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.26), transparent 68%);
+}
+
+/* ------------------------------------------------------------------ *
+ * Surfaces
+ * ------------------------------------------------------------------ */
+.panel {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+  border: 1px solid var(--color-hairline);
+  backdrop-filter: blur(12px);
+}
+
+.panel-solid {
+  background: var(--color-panel);
+  border: 1px solid var(--color-hairline);
+}
+
+.panel-interactive {
+  transition:
+    border-color 0.35s ease,
+    background 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease;
+}
+
+.panel-interactive:hover {
+  border-color: color-mix(in oklab, var(--color-mint) 42%, var(--color-hairline));
+  transform: translateY(-3px);
+  box-shadow: 0 22px 50px -28px rgba(45, 212, 191, 0.5);
+}
+
+/* A hairline that catches the light along one edge. */
+.edge-lit {
+  position: relative;
+}
+.edge-lit::before {
+  content: "";
+  position: absolute;
+  inset-inline: 12%;
+  top: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.65), transparent);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ *
+ * Typography helpers
+ * ------------------------------------------------------------------ */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+.display {
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  font-weight: 600;
+}
+
+.text-gradient {
+  background: linear-gradient(105deg, #ffffff 12%, #b9f5ea 52%, var(--color-mint) 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-warm {
+  background: linear-gradient(105deg, #ffffff 20%, #ffd3da 60%, var(--color-coral) 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ------------------------------------------------------------------ *
+ * Buttons
+ * ------------------------------------------------------------------ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.btn-lg {
+  padding: 1rem 1.65rem;
+  font-size: 0.975rem;
+}
+
+.btn-md {
+  padding: 0.6rem 1.15rem;
+  font-size: 0.875rem;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, var(--color-mint-soft), var(--color-mint));
+  color: #032a26;
+  box-shadow: 0 14px 34px -16px rgba(45, 212, 191, 0.75);
+}
+.btn-primary:hover {
+  box-shadow: 0 18px 44px -14px rgba(45, 212, 191, 0.9);
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: var(--color-hairline-2);
+  color: var(--color-ink);
+}
+.btn-outline:hover {
+  border-color: color-mix(in oklab, var(--color-mint) 55%, var(--color-hairline-2));
+  background: rgba(45, 212, 191, 0.09);
+  color: #ffffff;
+}
+
+.btn-ghost {
+  color: var(--color-ink-soft);
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  color: var(--color-ink);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-danger {
+  background: linear-gradient(180deg, #ff8fa2, var(--color-ember));
+  color: #34000c;
+  box-shadow: 0 14px 34px -16px rgba(244, 63, 94, 0.75);
+}
+
+.btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------------ *
+ * Range slider
+ * ------------------------------------------------------------------ */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-mint) 0%,
+    var(--color-mint) var(--range-progress, 50%),
+    var(--color-hairline-2) var(--range-progress, 50%),
+    var(--color-hairline-2) 100%
+  );
+}
+
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  border-radius: 999px;
+  background: #eafffb;
+  border: 3px solid var(--color-mint);
+  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.16);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.range:hover::-webkit-slider-thumb {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 7px rgba(45, 212, 191, 0.22);
+}
+
+.range:active::-webkit-slider-thumb {
+  transform: scale(1.04);
+}
+
+.range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-hairline-2);
+}
+
+.range::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-mint);
+}
+
+.range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #eafffb;
+  border: 3px solid var(--color-mint);
+  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.16);
+}
+
+/* ------------------------------------------------------------------ *
+ * Segmented control
+ * ------------------------------------------------------------------ */
+.seg-track {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--color-hairline);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.seg-track::-webkit-scrollbar {
+  display: none;
+}
+
+.seg-option {
+  position: relative;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  color: var(--color-ink-soft);
+  transition: color 0.25s ease;
+  cursor: pointer;
+}
+
+.seg-option:hover {
+  color: var(--color-ink);
+}
+
+.seg-option[data-selected="true"] {
+  color: #031f1c;
+  font-weight: 600;
+}
+
+/* Animated highlight that slides between options. */
+.seg-thumb {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--color-mint-soft), var(--color-mint));
+  box-shadow: 0 6px 18px -8px rgba(45, 212, 191, 0.8);
+}
+
+/* ------------------------------------------------------------------ *
+ * Result treatments
+ * ------------------------------------------------------------------ */
+.risk-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.risk-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ------------------------------------------------------------------ *
+ * Accessibility
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

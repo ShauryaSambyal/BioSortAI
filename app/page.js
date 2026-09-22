@@ -1,17 +1,19 @@
-'use client'
-import React, { useState } from 'react'
-import ImageUploader from './components/ImageUploader';
-import Header from './components/Header';
+import ClosingCta from "./components/ClosingCta";
+import Hero from "./components/Hero";
+import HowItWorks from "./components/HowItWorks";
+import ModelInputs from "./components/ModelInputs";
+import StatsBand from "./components/StatsBand";
+import ToolCards from "./components/ToolCards";
 
-const page = () => {
+export default function Home() {
   return (
     <>
-      <div className='min-h-screen overflow-hidden text-black px-8 bg-[#F0FDF4]'>
-        <Header />
-        <ImageUploader />
-      </div>
+      <Hero />
+      <StatsBand />
+      <ToolCards />
+      <HowItWorks />
+      <ModelInputs />
+      <ClosingCta />
     </>
-  )
+  );
 }
-
-export default page

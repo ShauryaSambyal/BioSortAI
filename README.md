@@ -23,6 +23,7 @@ https://biosort.vercel.app/
 * [Problem Statement](#-problem-statement)
 * [Our Solution](#-our-solution)
 * [Key Features](#-key-features)
+* [Heart Attack Risk Predictor](#-heart-attack-risk-predictor)
 * [How BioSort Works](#-how-biosort-works)
 * [Technology Stack](#-technology-stack)
 * [Project Structure](#-project-structure)
@@ -135,6 +136,80 @@ BioSort works through a web browser and does not require users to install a sepa
 The interface is designed around a straightforward workflow:
 
 **Upload → Analyze → View Result**
+
+---
+
+# ❤️ Heart Attack Risk Predictor
+
+BioSort now ships a second tool alongside waste segregation: a heart-attack risk screen at
+**`/heart`**. The landing page presents both as two calls to action, and the predictor itself is
+a single centred card — inputs on top, an animated result panel below.
+
+## Where the model comes from
+
+The model is the scikit-learn classifier trained in the separate **`ML Model`** project:
+
+| Artifact | Role |
+| --- | --- |
+| `LR_heart.pkl` | `LogisticRegression` — 15 coefficients + intercept |
+| `scaler_heart.pkl` | `StandardScaler` for the 5 continuous columns |
+| `columns_heart.pkl` | Ordered feature list the estimator expects |
+
+Those pickles remain the single source of truth. `scripts/extract_heart_model.py` reads them
+and writes `lib/heart-model.js`, a plain ES module holding the raw numbers, which
+`lib/heartModel.js` turns back into an exact reproduction of `LogisticRegression.predict_proba()`.
+
+A logistic regression is just a dot product through a sigmoid, so the whole model runs **in the
+browser** — no Python service, nothing to host, no health data ever leaving the device.
+
+## Why the port applies the scaler
+
+The original Streamlit app loaded `scaler_heart.pkl` but never used it. That is a bug with real
+consequences:
+
+* `scaler.mean_` / `scaler.scale_` line up exactly with the five continuous columns, and every
+  coefficient is `O(0.1–1.4)` — the signature of inputs that were standardised during training.
+* Feeding raw values into those coefficients produces saturated logits. A healthy 40-year-old male
+  scores `z ≈ −20` (`p ≈ 1e-9`) and a 62-year-old with a normal workup scores `z ≈ −2.8`, while
+  genuinely high-risk profiles pin at `p ≈ 0.998`. The model becomes certain about everything and
+  useful about nothing.
+
+With the scaler applied, the same profiles produce a graded, clinically plausible spread
+(`0.008 → 0.99`) instead of binary certainty. The port therefore standardises the continuous
+columns before scoring.
+
+Feature engineering mirrors the training pipeline exactly: `drop_first=True` one-hot encoding for
+the categorical fields, so the reference level of each group is the all-zeros row
+(*Female*, *Asymptomatic*, *LVH*, *Downsloping*).
+
+## Keeping it honest
+
+Two scripts back the integration:
+
+```bash
+# Re-extract after retraining (points at the ML Model folder by default)
+python scripts/extract_heart_model.py --source "C:/path/to/ML Model"
+
+# Prove the JS port still matches scikit-learn, case by case
+node scripts/verify_heart_port.mjs
+```
+
+The verifier runs eight profiles through **real** scikit-learn and through `lib/heartModel.js`,
+then asserts they agree to `1e-9`. It is a genuine cross-implementation check, not a snapshot of
+remembered numbers — run it whenever the artifacts change.
+
+## Explaining the score
+
+A bare percentage is not useful to a patient or a clinician, so every prediction also returns the
+**evidence**: each feature's contribution (`coefficient × standardised value`) is ranked and split
+into markers that raised the estimate and markers that lowered it, shown with their odds
+multiplier (`×3.78`, `×0.24`). The panel also exposes the log-odds and the model version.
+
+## Predictions are not diagnoses
+
+The output is a statistical estimate from population data. Risk scores are wrong in both
+directions, and a low score is not clearance. Every result screen in the app says so, and the same
+warning sits in the site footer.
 
 ---
 

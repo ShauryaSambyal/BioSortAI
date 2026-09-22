@@ -1,18 +1,19 @@
-import React from 'react'
+const STEPS = ["Reading image", "Matching category", "Writing disposal protocol"];
 
-const LoadingSpinner = () => {
+/** Single-purpose busy state: one spinner, one label, the pipeline steps inline. */
+export default function LoadingSpinner() {
   return (
-    <div className="flex flex-col items-center justify-center mt-8 p-8 w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-teal-100 mb-8 transition-all animate-in fade-in zoom-in duration-500">
-      <div className="relative flex justify-center items-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#14B8A6] border-l-4 border-l-transparent border-r-4 border-r-transparent"></div>
-        <div className="absolute inset-0 flex justify-center items-center">
-          <div className="h-6 w-6 rounded-full bg-teal-100 animate-pulse"></div>
-        </div>
-      </div>
-      <p className="mt-5 text-lg text-[#134E4A] font-bold tracking-wide animate-pulse">Analyzing Biomedical Waste...</p>
-      <p className="text-sm text-gray-500 mt-2">This may take a few moments</p>
+    <div
+      className="panel mx-auto mt-8 flex w-full max-w-3xl flex-col items-center gap-4 rounded-3xl px-6 py-10 text-center"
+      role="status"
+      aria-live="polite"
+    >
+      <span
+        className="h-7 w-7 animate-spin rounded-full border-2 border-hairline-2 border-t-mint"
+        aria-hidden="true"
+      />
+      <p className="text-sm font-medium text-ink">Analysing biomedical waste…</p>
+      <p className="eyebrow text-[10px]">{STEPS.join("  ·  ")}</p>
     </div>
-  )
+  );
 }
-
-export default LoadingSpinner
