@@ -44,20 +44,13 @@ export default function RiskGauge({ probability, band, playKey }) {
             <stop offset="0%" stopColor={band.stroke} stopOpacity="0.55" />
             <stop offset="100%" stopColor={band.stroke} />
           </linearGradient>
-          <filter id="gauge-glow" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
 
         {/* Track */}
         <path
           d={arcPath}
           fill="none"
-          stroke="#1a2430"
+          stroke="#e6e9e0"
           strokeWidth="14"
           strokeLinecap="round"
         />
@@ -92,7 +85,6 @@ export default function RiskGauge({ probability, band, playKey }) {
           stroke="url(#gauge-value)"
           strokeWidth="14"
           strokeLinecap="round"
-          filter="url(#gauge-glow)"
           initial={reduceMotion ? { pathLength: value } : { pathLength: 0 }}
           animate={{ pathLength: value }}
           transition={{ duration: 1.25, ease: EASE }}
@@ -109,7 +101,7 @@ export default function RiskGauge({ probability, band, playKey }) {
                 y1={inner.y}
                 x2={outer.x}
                 y2={outer.y}
-                stroke="#24313f"
+                stroke="#d2d6c6"
                 strokeWidth="1.5"
                 strokeLinecap="round"
               />

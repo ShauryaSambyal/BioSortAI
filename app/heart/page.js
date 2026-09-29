@@ -10,23 +10,18 @@ export const metadata = {
 export default function HeartPage() {
   return (
     <div className="relative px-4 pb-4 pt-16 sm:px-6 sm:pt-20">
-      <div
-        className="glow glow-mint left-1/2 top-[-180px] h-[440px] w-[680px] -translate-x-1/2 opacity-70"
-        aria-hidden="true"
-      />
-
       {/* Centered intro */}
       <div className="relative mx-auto max-w-2xl text-center">
         <Reveal>
-          <span className="panel inline-flex items-center gap-2 rounded-full px-4 py-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-mint" aria-hidden="true" />
-            <span className="eyebrow text-ink-soft">Heart attack predictor</span>
+          <span className="inline-flex items-center gap-2 rounded-md border border-hairline bg-sage px-3.5 py-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-moss" aria-hidden="true" />
+            <span className="eyebrow text-moss">Heart attack predictor</span>
           </span>
         </Reveal>
 
         <Reveal delay={0.08}>
           <h1 className="display mt-7 text-4xl sm:text-6xl">
-            Know your <span className="text-gradient">number</span>.
+            Know your <span className="text-moss">number</span>.
           </h1>
         </Reveal>
 

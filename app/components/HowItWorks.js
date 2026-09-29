@@ -39,7 +39,7 @@ export default function HowItWorks() {
             <h2 className="display mt-5 text-3xl sm:text-5xl">
               From numbers to a
               <br />
-              <span className="text-gradient">next action</span>.
+              <span className="text-mint">next action</span>.
             </h2>
             <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
               The heart model is a logistic regression — the same family of model used in clinical

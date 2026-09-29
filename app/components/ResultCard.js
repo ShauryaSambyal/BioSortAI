@@ -6,16 +6,16 @@ import { FiAlertTriangle, FiCheckCircle, FiInfo, FiTrash2, FiX } from "react-ico
 import { EASE } from "./Reveal";
 
 const RISK_STYLES = {
-  high: { stroke: "#f43f5e", label: "High risk", tint: "rgba(244,63,94,0.10)" },
-  medium: { stroke: "#fbbf24", label: "Medium risk", tint: "rgba(251,191,36,0.10)" },
-  low: { stroke: "#34d399", label: "Low risk", tint: "rgba(52,211,153,0.10)" },
+  high: { stroke: "#be123c", label: "High risk", tint: "rgba(190,18,60,0.09)" },
+  medium: { stroke: "#b45309", label: "Medium risk", tint: "rgba(180,83,9,0.09)" },
+  low: { stroke: "#3f7308", label: "Low risk", tint: "rgba(63,115,8,0.09)" },
 };
 
 function riskStyle(riskLevel) {
   return RISK_STYLES[String(riskLevel ?? "").toLowerCase()] ?? RISK_STYLES.low;
 }
 
-function Stat({ icon: Icon, label, value, tone = "#2dd4bf" }) {
+function Stat({ icon: Icon, label, value, tone = "#3f7308" }) {
   return (
     <div className="bg-abyss px-5 py-5">
       <p className="eyebrow text-[10px]">{label}</p>
@@ -40,13 +40,7 @@ export default function ResultCard({ result, onClose }) {
           transition={{ duration: 0.65, ease: EASE }}
           className="mx-auto mt-8 w-full max-w-3xl"
         >
-          <div className="panel edge-lit relative overflow-hidden rounded-3xl p-6 sm:p-9">
-            <div
-              className="glow right-[-120px] top-[-120px] h-[280px] w-[280px] opacity-60"
-              style={{ background: `radial-gradient(circle, ${risk.stroke}44, transparent 68%)` }}
-              aria-hidden="true"
-            />
-
+          <div className="panel relative overflow-hidden rounded-2xl p-6 sm:p-9">
             <div className="relative flex items-start justify-between gap-4 border-b border-hairline pb-5">
               <div>
                 <p className="eyebrow">BioSort analysis</p>

@@ -104,7 +104,7 @@ export default function ImageUploader() {
           event.preventDefault();
           handleAnalyze();
         }}
-        className="panel edge-lit rounded-3xl p-6 sm:p-9"
+        className="panel rounded-2xl p-6 sm:p-9"
       >
         {/* Drop zone */}
         <motion.div
@@ -119,8 +119,8 @@ export default function ImageUploader() {
             acceptFile(event.dataTransfer.files?.[0]);
           }}
           animate={{
-            borderColor: dragging ? "#2dd4bf" : "#24313f",
-            backgroundColor: dragging ? "rgba(45,212,191,0.06)" : "rgba(255,255,255,0.015)",
+            borderColor: dragging ? "#3f7308" : "#d2d6c6",
+            backgroundColor: dragging ? "rgba(63,115,8,0.07)" : "#f4faed",
           }}
           transition={{ duration: 0.25 }}
           className="relative flex flex-col items-center justify-center rounded-2xl border border-dashed px-6 py-12 text-center"
@@ -191,11 +191,9 @@ export default function ImageUploader() {
         )}
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <motion.button
+          <button
             type="submit"
             disabled={!file || loading}
-            whileHover={!file || loading ? undefined : { y: -2 }}
-            whileTap={!file || loading ? undefined : { scale: 0.985 }}
             className="btn btn-primary btn-lg flex-1"
           >
             {loading ? (
@@ -209,7 +207,7 @@ export default function ImageUploader() {
                 Classify this item
               </>
             )}
-          </motion.button>
+          </button>
 
           {file && !loading && (
             <button type="button" onClick={clearFile} className="btn btn-outline btn-lg sm:w-auto">

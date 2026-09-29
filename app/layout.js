@@ -1,17 +1,16 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 
 import Header from "./components/Header";
 import SiteFooter from "./components/SiteFooter";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Variable font with the optical-size axis so large headings pick the tight
+// display cut automatically; body text gets the text cut.
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  axes: ["opsz"],
+  variable: "--font-bricolage",
+  display: "swap",
 });
 
 export const metadata = {
@@ -30,19 +29,15 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#04070a",
-  colorScheme: "dark",
+  themeColor: "#ffffff",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={bricolage.variable}>
       <body className="antialiased">
-        {/* The signature backdrop: a fixed technical grid over near-black. */}
-        <div className="grid-backdrop" aria-hidden="true" />
-        <div className="grid-backdrop grid-backdrop--fine" aria-hidden="true" />
-
-        <div className="relative z-10 flex min-h-screen flex-col">
+        <div className="relative flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">{children}</main>
           <SiteFooter />

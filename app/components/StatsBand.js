@@ -33,13 +33,12 @@ const STATS = [
 
 export default function StatsBand() {
   return (
-    <section className="relative px-4 py-24 sm:px-6">
+    <section className="relative bg-sage px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <p className="eyebrow">The stakes</p>
           <h2 className="display mt-5 max-w-3xl text-3xl sm:text-5xl">
-            Most heart attacks are <span className="text-gradient-warm">detectable</span> before they
-            happen.
+            Most heart attacks are <span className="text-coral">detectable</span> before they happen.
           </h2>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink-soft">
             Cardiovascular disease rarely announces itself. The signals sit quietly in numbers your
@@ -48,10 +47,10 @@ export default function StatsBand() {
           </p>
         </Reveal>
 
-        <StaggerGroup className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-4">
+        <StaggerGroup className="cut-plate mt-16 grid gap-px overflow-hidden bg-hairline sm:grid-cols-2 lg:grid-cols-4">
           {STATS.map((stat) => (
             <StaggerItem key={stat.label} className="bg-abyss">
-              <div className="group h-full bg-abyss p-7 transition-colors duration-500 hover:bg-panel">
+              <div className="group h-full bg-abyss p-7 transition-colors duration-500 hover:bg-sage">
                 <p className="display text-4xl text-ink sm:text-5xl">
                   <StatCounter
                     value={stat.value}

@@ -81,7 +81,7 @@ function BandScale({ probability, band }) {
       </div>
 
       <motion.span
-        className="absolute top-[-4px] h-4 w-[3px] -translate-x-1/2 rounded-full bg-white shadow-[0_0_14px_rgba(255,255,255,0.85)]"
+        className="absolute top-[-4px] h-4 w-[3px] -translate-x-1/2 rounded-full bg-forest"
         style={{ left: `${probability * 100}%` }}
         initial={{ opacity: 0, scaleY: 0 }}
         animate={{ opacity: 1, scaleY: 1 }}
@@ -208,7 +208,7 @@ export default function HeartPredictor() {
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="panel edge-lit relative mx-auto flex w-full max-w-3xl flex-col gap-10 rounded-3xl p-6 sm:p-10"
+        className="panel relative mx-auto flex w-full max-w-3xl flex-col gap-10 rounded-2xl p-6 sm:p-10"
       >
         {FIELD_GROUPS.map((group, groupIndex) => (
           <fieldset key={group.id} className="flex flex-col gap-7">
@@ -257,7 +257,7 @@ export default function HeartPredictor() {
                   setInput(preset.value);
                   setResult(null);
                 }}
-                className="rounded-full border border-hairline-2 bg-white/[0.03] px-3.5 py-1.5 text-xs text-ink-soft transition-colors hover:border-mint/50 hover:text-ink"
+                className="rounded-md border border-hairline-2 bg-sage px-3.5 py-1.5 text-xs text-ink-soft transition-colors hover:border-moss/50 hover:text-ink"
               >
                 {preset.label}
               </button>
@@ -265,11 +265,9 @@ export default function HeartPredictor() {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <motion.button
+            <button
               type="submit"
               disabled={scoring || hasErrors}
-              whileHover={scoring || hasErrors ? undefined : { y: -2 }}
-              whileTap={scoring || hasErrors ? undefined : { scale: 0.985 }}
               className="btn btn-primary btn-lg flex-1"
             >
               {scoring ? (
@@ -283,7 +281,7 @@ export default function HeartPredictor() {
                   Estimate my heart attack risk
                 </>
               )}
-            </motion.button>
+            </button>
 
             <button type="button" onClick={reset} className="btn btn-outline btn-lg sm:w-auto">
               <FiRotateCcw className="text-sm" />
@@ -310,13 +308,7 @@ export default function HeartPredictor() {
             transition={{ duration: 0.65, ease: EASE }}
             className="mx-auto mt-8 w-full max-w-3xl scroll-mt-28"
           >
-            <div className="panel edge-lit relative overflow-hidden rounded-3xl p-6 sm:p-10">
-              <div
-                className="glow left-1/2 top-[-120px] h-[300px] w-[520px] -translate-x-1/2 opacity-60"
-                style={{ background: `radial-gradient(circle, ${result.band.stroke}55, transparent 68%)` }}
-                aria-hidden="true"
-              />
-
+            <div className="panel relative overflow-hidden rounded-2xl p-6 sm:p-10">
               <div className="relative flex flex-col items-center">
                 <p className="eyebrow">Estimated probability of heart disease</p>
                 <div className="mt-6 w-full max-w-sm">
@@ -341,7 +333,7 @@ export default function HeartPredictor() {
                   items={result.contributors}
                   tone={result.band.stroke}
                 />
-                <FactorList title="Markers lowering risk" items={result.protectors} tone="#34d399" />
+                <FactorList title="Markers lowering risk" items={result.protectors} tone="#3f7308" />
               </div>
 
               <div className="relative mt-9 grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline sm:grid-cols-3">

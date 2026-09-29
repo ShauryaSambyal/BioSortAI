@@ -14,7 +14,7 @@ export default function ModelInputs() {
   );
 
   return (
-    <section className="relative px-4 py-24 sm:px-6">
+    <section className="relative bg-sage px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr]">
           <Reveal>
@@ -38,15 +38,15 @@ export default function ModelInputs() {
           </Reveal>
 
           <StaggerGroup
-            className="grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2"
+            className="cut-plate grid gap-px overflow-hidden bg-hairline sm:grid-cols-2"
             stagger={0.05}
           >
             {fields.map((field) => (
               <StaggerItem key={field.id} className="bg-abyss">
-                <div className="group h-full bg-abyss px-5 py-5 transition-colors duration-500 hover:bg-panel">
+                <div className="group h-full bg-abyss px-5 py-5 transition-colors duration-500 hover:bg-sage">
                   <p className="eyebrow text-[10px] text-ink-faint">{field.group}</p>
                   <p className="mt-2.5 text-sm text-ink">{field.label}</p>
-                  <p className="mt-1.5 font-mono text-[11px] text-mint/80">
+                  <p className="mt-1.5 font-mono text-[11px] text-moss">
                     {field.kind === "slider"
                       ? `${field.min}–${field.max} ${field.unit}`
                       : field.options.map((option) => option.label).join(" · ")}
@@ -54,6 +54,12 @@ export default function ModelInputs() {
                 </div>
               </StaggerItem>
             ))}
+
+            {/* An odd field count leaves a gap in the two-column grid; fill it
+                so the container colour does not show through as a dead cell. */}
+            {fields.length % 2 === 1 && (
+              <div className="hidden bg-abyss sm:block" aria-hidden="true" />
+            )}
           </StaggerGroup>
         </div>
       </div>

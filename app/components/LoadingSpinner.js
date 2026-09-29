@@ -4,7 +4,7 @@ const STEPS = ["Reading image", "Matching category", "Writing disposal protocol"
 export default function LoadingSpinner() {
   return (
     <div
-      className="panel mx-auto mt-8 flex w-full max-w-3xl flex-col items-center gap-4 rounded-3xl px-6 py-10 text-center"
+      className="panel mx-auto mt-8 flex w-full max-w-3xl flex-col items-center gap-4 rounded-2xl px-6 py-10 text-center"
       role="status"
       aria-live="polite"
     >

@@ -1,9 +1,3 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
-
-import { EASE } from "./Reveal";
-
 /** Colour categories as defined by the Bio-Medical Waste Management Rules, 2016. */
 const CATEGORIES = [
   {
@@ -30,7 +24,7 @@ const CATEGORIES = [
   },
   {
     name: "White",
-    colour: "#e8eef5",
+    colour: "#94a3b8",
     summary: "Sharps in puncture-proof containers",
     examples: [
       "Needles and syringes",
@@ -53,8 +47,6 @@ const CATEGORIES = [
 ];
 
 export default function WasteCategoryLegend() {
-  const reduceMotion = useReducedMotion();
-
   return (
     <section className="relative px-4 py-20 sm:px-6">
       <div className="mx-auto max-w-6xl">
@@ -68,14 +60,10 @@ export default function WasteCategoryLegend() {
         </p>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {CATEGORIES.map((category, index) => (
-            <motion.article
+          {CATEGORIES.map((category) => (
+            <article
               key={category.name}
-              initial={reduceMotion ? false : { opacity: 0, y: 26 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.65, delay: index * 0.08, ease: EASE }}
-              className="panel panel-interactive flex flex-col rounded-2xl p-6"
+              className="panel flex flex-col rounded-2xl p-6"
             >
               <span
                 className="h-1.5 w-12 rounded-full"
@@ -99,7 +87,7 @@ export default function WasteCategoryLegend() {
                   </li>
                 ))}
               </ul>
-            </motion.article>
+            </article>
           ))}
         </div>
 

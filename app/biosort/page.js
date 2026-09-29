@@ -11,22 +11,17 @@ export const metadata = {
 export default function BioSortPage() {
   return (
     <div className="relative px-4 pb-4 pt-16 sm:px-6 sm:pt-20">
-      <div
-        className="glow glow-mint left-1/2 top-[-180px] h-[440px] w-[680px] -translate-x-1/2 opacity-60"
-        aria-hidden="true"
-      />
-
       <div className="relative mx-auto max-w-2xl text-center">
         <Reveal>
-          <span className="panel inline-flex items-center gap-2 rounded-full px-4 py-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-mint" aria-hidden="true" />
-            <span className="eyebrow text-ink-soft">Biomedical waste segregation</span>
+          <span className="inline-flex items-center gap-2 rounded-md border border-hairline bg-sage px-3.5 py-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-moss" aria-hidden="true" />
+            <span className="eyebrow text-moss">Biomedical waste segregation</span>
           </span>
         </Reveal>
 
         <Reveal delay={0.08}>
           <h1 className="display mt-7 text-4xl sm:text-6xl">
-            Sort it <span className="text-gradient">safely</span>.
+            Sort it <span className="text-moss">safely</span>.
           </h1>
         </Reveal>
 
