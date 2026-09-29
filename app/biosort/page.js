@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function BioSortPage() {
   return (
-    <div className="relative px-4 pb-4 pt-16 sm:px-6 sm:pt-20">
+    <div className="relative px-4 pb-4 pt-32 sm:px-6 sm:pt-36">
       <div className="relative mx-auto max-w-2xl text-center">
         <Reveal>
           <span className="inline-flex items-center gap-2 rounded-md border border-hairline bg-sage px-3.5 py-2">

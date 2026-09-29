@@ -108,7 +108,7 @@ export default function Hero() {
       <LedgerColumn side="left" />
       <LedgerColumn side="right" />
 
-      <div className="relative px-5 pb-16 pt-6 sm:px-6 lg:px-8 lg:pb-20">
+      <div className="relative px-5 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-20 lg:pt-32">
         <div className="cut-plate relative overflow-hidden bg-sage">
           <div className="mx-auto flex max-w-4xl flex-col items-center px-6 py-16 text-center sm:px-10 sm:py-20 lg:py-24">
             <motion.span

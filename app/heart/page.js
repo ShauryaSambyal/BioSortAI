@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function HeartPage() {
   return (
-    <div className="relative px-4 pb-4 pt-16 sm:px-6 sm:pt-20">
+    <div className="relative px-4 pb-4 pt-32 sm:px-6 sm:pt-36">
       {/* Centered intro */}
       <div className="relative mx-auto max-w-2xl text-center">
         <Reveal>
