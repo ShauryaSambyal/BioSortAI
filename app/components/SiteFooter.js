@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FiAlertTriangle, FiGithub } from "react-icons/fi";
+import { FiGithub } from "react-icons/fi";
 
 import Logo from "./Logo";
 
@@ -51,21 +51,6 @@ export default function SiteFooter() {
             </li>
           </ul>
         </div>
-      </div>
-
-      <div className="mx-auto mt-12 max-w-6xl">
-        <div className="panel flex items-start gap-3 rounded-2xl p-4">
-          <FiAlertTriangle className="mt-0.5 shrink-0 text-amber" aria-hidden="true" />
-          <p className="text-[13px] leading-relaxed text-ink-soft">
-            <strong className="font-medium text-ink">Not medical advice.</strong> These tools are for
-            education and triage support only. A prediction is a statistical estimate from population
-            data, not a diagnosis — always consult a qualified clinician about your heart health.
-          </p>
-        </div>
-        <p className="mt-8 text-xs text-ink-faint">
-          © {new Date().getFullYear()} BioSort AI. Predictions are computed locally; no health data
-          leaves your device.
-        </p>
       </div>
     </footer>
   );
